@@ -21,7 +21,11 @@ var wiresToCut = [];
 var timer = document.getElementById("timer");
 var wireBox = document.getElementById("wirebox");
 var resetButton = document.querySelector('button');
-// TODO: add audio elements // 
+var explode = document.getElementById("explode");
+var yay = document.getElementById("yay");
+var buzz = document.getElementById("buzz");
+var siren = document.getElementById("siren");
+var success = document.getElementById("success");
 
 // Event Listeners 
 resetButton.addEventListener('click', reset);
@@ -31,7 +35,7 @@ wireBox.addEventListener('click', function(e) {
     if (!wireState[color] && !gameOver && color){
         // If wire isn't cute and game isn't over...
         e.target.src = `img/cut-${color}-wire.png`;
-        //TODO: play cut audio//
+        buzz.play();
         wireState[color] = true;
         //Check for correctness: is it i 'wiresToCut', if it is we need to splice it out by knowing its index
         var wireIndex = wiresToCut.indexOf(color);
@@ -64,8 +68,9 @@ function init(){
     }
     console.log(wiresToCut);
     resetButton.disabled = true;
-    //TODO: Play the siren 
+        siren.play();
     countDown = setInterval(updateClock, 1000);
+
 }
 
 function reset(){
@@ -84,7 +89,8 @@ function reset(){
     clearTimeout(delay);
     clearInterval(countDown);
 
-    //TODO: Stop playing audio (victory and/or explosion)
+    success.pause();
+    success.currentTime = 0;
     init();
 }
 
@@ -103,11 +109,14 @@ function endGame(win){
         //we won! 
         console.log("You've saved the city!");
         timer.classList.add('green');
-        //TODO: cheer
+        yay.addEventListener('ended', function(){
+            success.play();
+        })
+        yay.play();
     }else{
         //we lose. 
         console.log("CaBOOOOM 💣")
-        //TODO: explosion audio
+        explode.play();
         document.body.classList.add('exploded');
 
     }
